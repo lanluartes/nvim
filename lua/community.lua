@@ -7,7 +7,7 @@
 ---@type LazySpec
 return {
   "AstroNvim/astrocommunity",
-  -- { import = "astrocommunity.pack.lua" },
+  -- { import = "astrocommunity.utility.telescope-live-grep-args-nvim" },
   -- { import = "astrocommunity.diagnostics.trouble-nvim" },
   -- import/override with your plugins folder
 }

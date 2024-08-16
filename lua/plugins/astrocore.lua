@@ -68,9 +68,6 @@ return {
         ["<tab>"] = { ":tabnext<cr>" },
         ["<s-tab>"] = { ":tabprev<cr>" },
 
-        ["<leader>h"] = {
-          desc = "Harpoon",
-        },
         ["<leader>ha"] = {
           function() require("harpoon.mark").add_file() end,
           desc = "Add file to harpoon",
