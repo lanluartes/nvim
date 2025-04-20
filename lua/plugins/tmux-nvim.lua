@@ -1,0 +1,16 @@
+return {}
+-- return {
+--   {
+--     "aserowy/tmux.nvim",
+--     config = function()
+--       return require("tmux").setup({
+--         resize = {
+--           enable_default_keybindings = false,
+--         },
+--         copy_sync = {
+--           enable = false
+--         }
+--       })
+--     end,
+--   },
+-- }

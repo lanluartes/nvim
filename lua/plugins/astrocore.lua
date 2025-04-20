@@ -46,6 +46,10 @@ return {
       -- first key is the mode
       n = {
         -- second key is the lefthand side of the map
+        ["<M-h>"] = {'<Cmd>lua require("tmux").resize_left()<CR>', silent = true },
+        ["<M-j>"] = {'<Cmd>lua require("tmux").resize_bottom()<CR>', silent = true },
+        ["<M-k>"] = {'<Cmd>lua require("tmux").resize_top()<CR>', silent = true },
+        ["<M-l>"] = {'<Cmd>lua require("tmux").resize_right()<CR>', silent = true },
 
         -- navigate buffer tabs
         ["L"] = { function() require("astrocore.buffer").nav(vim.v.count1) end, desc = "Next buffer" },
@@ -122,6 +126,10 @@ return {
         -- setting a mapping to false will disable it
         -- ["<C-S>"] = false,
       },
+      t = {
+        -- ["<C-j>"] = {'<C-\\><C-n>', silent = true, noremap=true },
+        ["<Esc><Esc>"] = {"<C-\\><C-n>", silent = true, noremap=true },
+      }
     },
     sessions = {
       autosave = {
