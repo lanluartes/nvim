@@ -15,7 +15,7 @@ return {
       large_buf = { size = 1024 * 256, lines = 10000 }, -- set global limits for large files for disabling features like treesitter
       autopairs = true, -- enable autopairs at start
       cmp = true, -- enable completion at start
-      diagnostics_mode = 3, -- diagnostic mode on start (0 = off, 1 = no signs/virtual text, 2 = no virtual text, 3 = on)
+      diagnostics = { virtual_text = true, virtual_lines = false }, -- diagnostic settings on startup
       highlighturl = true, -- highlight URLs at start
       notifications = true, -- enable notifications at start
     },
@@ -23,6 +23,19 @@ return {
     diagnostics = {
       virtual_text = true,
       underline = true,
+    },
+    -- passed to `vim.filetype.add`
+    filetypes = {
+      -- see `:h vim.filetype.add` for usage
+      extension = {
+        foo = "fooscript",
+      },
+      filename = {
+        [".foorc"] = "fooscript",
+      },
+      pattern = {
+        [".*/etc/foo/.*"] = "fooscript",
+      },
     },
     -- vim options can be configured here
     options = {
@@ -46,14 +59,10 @@ return {
       -- first key is the mode
       n = {
         -- second key is the lefthand side of the map
-        ["<M-h>"] = {'<Cmd>lua require("tmux").resize_left()<CR>', silent = true },
-        ["<M-j>"] = {'<Cmd>lua require("tmux").resize_bottom()<CR>', silent = true },
-        ["<M-k>"] = {'<Cmd>lua require("tmux").resize_top()<CR>', silent = true },
-        ["<M-l>"] = {'<Cmd>lua require("tmux").resize_right()<CR>', silent = true },
 
         -- navigate buffer tabs
-        ["L"] = { function() require("astrocore.buffer").nav(vim.v.count1) end, desc = "Next buffer" },
-        ["H"] = { function() require("astrocore.buffer").nav(-vim.v.count1) end, desc = "Previous buffer" },
+        ["]b"] = { function() require("astrocore.buffer").nav(vim.v.count1) end, desc = "Next buffer" },
+        ["[b"] = { function() require("astrocore.buffer").nav(-vim.v.count1) end, desc = "Previous buffer" },
 
         -- mappings seen under group name "Buffer"
         ["<Leader>bd"] = {
@@ -65,83 +74,37 @@ return {
           desc = "Close buffer from tabline",
         },
 
-        ["<leader>ss"] = { ":split<cr>", desc = "Split screen horizontally" },
-        ["<leader>sv"] = { ":vsplit<cr>", desc = "Split screen vertically" },
+        ["<M-h>"] = { '<Cmd>lua require("tmux").resize_left()<CR>', silent = true },
+        ["<M-j>"] = { '<Cmd>lua require("tmux").resize_bottom()<CR>', silent = true },
+        ["<M-k>"] = { '<Cmd>lua require("tmux").resize_top()<CR>', silent = true },
+        ["<M-l>"] = { '<Cmd>lua require("tmux").resize_right()<CR>', silent = true },
 
-        ["<leader>te"] = { ":tabedit<cr>" },
+        -- navigate buffer tabs
+        ["L"] = { function() require("astrocore.buffer").nav(vim.v.count1) end, desc = "Next buffer" },
+        ["H"] = { function() require("astrocore.buffer").nav(-vim.v.count1) end, desc = "Previous buffer" },
+
+        ["<Leader>ss"] = { ":split<cr>", desc = "Split screen horizontally" },
+        ["<Leader>sv"] = { ":vsplit<cr>", desc = "Split screen vertically" },
+
+        -- ["<LocalLeader>yp"] = { , desc = "Split screen horizontally" },
+        -- ["<LocalLeader>yd"] = { ":vsplit<cr>", desc = "Split screen vertically" },
+        -- ["<LocalLeader>yd"] = { ":vsplit<cr>", desc = "Split screen vertically" },
+
+        ["<LocalLeader>y"] = { name = "󰆏 Copy..." },
+        ["<LocalLeader>yp"] = { function() vim.fn.setreg("+", vim.fn.expand "%:p:.") end, desc = "Copy file path" },
+        ["<LocalLeader>yd"] = { function() vim.fn.setreg("+", vim.fn.expand "%:h") end, desc = "Copy directory path" },
+        ["<LocalLeader>yf"] = { function() vim.fn.setreg("+", vim.fn.expand "%:t:r") end, desc = "Copy file name" },
+
+        ["<Leader>te"] = { ":tabedit<cr>" },
         ["<tab>"] = { ":tabnext<cr>" },
         ["<s-tab>"] = { ":tabprev<cr>" },
 
-        ["<leader>ha"] = {
-          function() require("harpoon.mark").add_file() end,
-          desc = "Add file to harpoon",
-        },
-        ["<leader>ho"] = {
-          function() require("harpoon.ui").toggle_quick_menu() end,
-          desc = "Toggle harpoon ui",
-        },
-        ["<leader>hr"] = {
-          function() require("harpoon.ui").rm_file() end,
-          desc = "Remove buffer from list",
-        },
-        ["<leader>hc"] = {
-          function() require("harpoon.ui").clear_all() end,
-          desc = "Clear all buffers",
-        },
-        ["<leader>h1"] = {
-          function() require("harpoon.ui").nav_file(1) end,
-          desc = "[Harpoon] go to file 1",
-        },
-        ["<leader>h2"] = {
-          function() require("harpoon.ui").nav_file(2) end,
-          desc = "[Harpoon] go to file 2",
-        },
-        ["<leader>h3"] = {
-          function() require("harpoon.ui").nav_file(3) end,
-          desc = "[Harpoon] go to file 3",
-        },
-        ["<leader>h4"] = {
-          function() require("harpoon.ui").nav_file(4) end,
-          desc = "[Harpoon] go to file 4",
-        },
-        ["<leader>h5"] = {
-          function() require("harpoon.ui").nav_file(5) end,
-          desc = "[Harpoon] go to file 5",
-        },
-
         -- tables with just a `desc` key will be registered with which-key if it's installed
         -- this is useful for naming menus
-        ["<leader>b"] = { desc = "Buffers" },
-        ["<leader>bc"] = {
-          function() require("astrocore.buffer").close_all(true, true) end,
-          desc = "Close all buffers except current",
-        },
-        ["<leader>bs"] = { desc = "Sort"},
-        ["<leader>bse"] = { function() require("astrocore.buffer").sort "extension" end, desc = "By extension" },
-        ["<leader>bsr"] = { function() require("astrocore.buffer").sort "unique_path" end, desc = "By relative path" },
-        ["<leader>bsp"] = { function() require("astrocore.buffer").sort "full_path" end, desc = "By full path" },
-        ["<leader>bsi"] = { function() require("astrocore.buffer").sort "bufnr" end, desc = "By buffer number" },
-        ["<leader>bsm"] = { function() require("astrocore.buffer").sort "modified" end, desc = "By modification" },
+        -- ["<Leader>b"] = { desc = "Buffers" },
 
         -- setting a mapping to false will disable it
         -- ["<C-S>"] = false,
-      },
-      t = {
-        -- ["<C-j>"] = {'<C-\\><C-n>', silent = true, noremap=true },
-        ["<Esc><Esc>"] = {"<C-\\><C-n>", silent = true, noremap=true },
-      }
-    },
-    sessions = {
-      autosave = {
-        last = true,
-        cwd = true,
-      },
-
-      -- Patterns to ignore when saving sessions
-      ignore = {
-        dirs = {}, -- working directories to ignore sessions in
-        filetypes = { "gitcommit", "gitrebase" }, -- filetypes to ignore sessions
-        buftypes = {}, -- buffer types to ignore sessions
       },
     },
   },

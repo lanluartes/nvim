@@ -12,7 +12,6 @@ return {
   opts = {
     -- Configuration table of features provided by AstroLSP
     features = {
-      autoformat = false, -- enable or disable auto formatting on start
       codelens = true, -- enable/disable codelens refresh on start
       inlay_hints = false, -- enable/disable inlay hints on start
       semantic_tokens = true, -- enable/disable semantic token highlighting
@@ -40,8 +39,6 @@ return {
     },
     -- enable servers that you already have installed without mason
     servers = {
-      "pyright",
-      "ts_ls",
     },
     -- customize language server configuration options passed to `lspconfig`
     ---@diagnostic disable: missing-fields
@@ -52,22 +49,6 @@ return {
     handlers = {
       -- a function without a key is simply the default handler, functions take two parameters, the server name and the configured options table for that server
       -- function(server, opts) require("lspconfig")[server].setup(opts) end
-      -- tsserver = function(_, opts) require("lspconfig").tsserver.setup {
-      --   init_options = {
-      --     plugins = {
-      --       {
-      --         name = "@vue/typescript-plugin",
-      --         location = "/Users/allan.luartes/.nvm/versions/node/v18.17.1/lib/node_modules/@vue/typescript-plugin",
-      --         languages = { "vue" },
-      --       }
-      --     }
-      --   },
-        -- filetypes = {
-        --   "javascript",
-        --   "typescript",
-        --   "vue"
-        -- }
-      -- } end,
 
       -- the key is the server that is being setup with `lspconfig`
       -- rust_analyzer = false, -- setting a handler to false will disable the set up of that language server
